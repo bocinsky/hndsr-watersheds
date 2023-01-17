@@ -124,5 +124,5 @@ huc4$`1501` %<>%
 
 huc4 %>%
   dplyr::bind_rows() %>%
-  rmapshaper::ms_simplify(keep = 0.07) %>%
+  rmapshaper::ms_simplify(keep = 0.06) %>%
   sf::write_sf("watersheds.geojson", delete_dsn = TRUE)
