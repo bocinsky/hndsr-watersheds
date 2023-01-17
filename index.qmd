@@ -28,7 +28,8 @@ huc10 <- read_sf("watersheds.geojson")
 
 mapview(
   huc10, 
-  zcol = "Subregion", 
+  zcol = "Subregion",
+  label = "Watershed",
   layer.name = "HUC10",
   legend = FALSE, 
   lwd = 0.8, 
