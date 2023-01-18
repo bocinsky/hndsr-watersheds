@@ -123,27 +123,6 @@ huc4$`1501` %<>%
                 Hydrologic_Unit != "1501000106") %>%
   cut_hydro(colorado_river, 2)
 
-huc4 %>%
-  dplyr::bind_rows() %>%
-  sf::write_sf("watersheds.fgb", delete_dsn = TRUE)
-
-sf::read_sf("watersheds.fgb")
-
-library(leaflet)
-library(leafem)
-
-# via URL
-leaflet() %>%
-  addTiles() %>%
-  leafem:::addFgb(
-    url = "https://raw.githubusercontent.com/bocinsky/hndsr-watersheds/main/watersheds.fgb",
-    label = "Watershed",
-    fill = TRUE
-  ) %>%
-  addLayersControl(overlayGroups = c("counties")) %>%
-  addMouseCoordinates() %>%
-  setView(lng = -105.644, lat = 51.618, zoom = 3)
-
 huc4 %<>%
   dplyr::bind_rows() %>%
   rmapshaper::ms_simplify()
