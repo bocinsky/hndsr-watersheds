@@ -133,20 +133,30 @@ library(leaflet)
 library(leafem)
 
 # via URL
-url = "https://raw.githubusercontent.com/flatgeobuf/flatgeobuf/3.0.1/test/data/UScounties.fgb"
-
-m <-leaflet() %>%
-  addTiles()
-
-test <- leafem:::addFgb(map = m,
-    url = "watersheds.fgb",
+leaflet() %>%
+  addTiles() %>%
+  leafem:::addFgb(
+    url = "https://raw.githubusercontent.com/bocinsky/hndsr-watersheds/main/watersheds.fgb",
     label = "Watershed",
-    fillColor = "Subregion"
+    fill = TRUE
   ) %>%
   addLayersControl(overlayGroups = c("counties")) %>%
   addMouseCoordinates() %>%
   setView(lng = -105.644, lat = 51.618, zoom = 3)
 
+huc4 %<>%
+  dplyr::bind_rows()
+
+mapview::mapview(huc4,
+                 layer.name = "HUC10 Subregions",
+                 zcol = "Subregion",
+                 label = "Watershed"
+                 ) %>%
+  mapview::mapshot("index.html",
+                   selfcontained = FALSE)
+
+
+mapview::mapview("https://raw.githubusercontent.com/bocinsky/hndsr-watersheds/main/watersheds.fgb")
 
 
 %>%
