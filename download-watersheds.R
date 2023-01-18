@@ -145,50 +145,15 @@ leaflet() %>%
   setView(lng = -105.644, lat = 51.618, zoom = 3)
 
 huc4 %<>%
-  dplyr::bind_rows()
+  dplyr::bind_rows() %>%
+  rmapshaper::ms_simplify()
 
 mapview::mapview(huc4,
                  layer.name = "HUC10 Subregions",
                  zcol = "Subregion",
-                 label = "Watershed"
+                 label = "Watershed",
+                 popup = c("Hydrologic_Unit")
                  ) %>%
   mapview::mapshot("index.html",
                    selfcontained = FALSE)
 
-
-mapview::mapview("https://raw.githubusercontent.com/bocinsky/hndsr-watersheds/main/watersheds.fgb")
-
-
-%>%
-  mapview::mapview(zcol = "Subregion",
-                   label = "Watershed")
-
-
-
-library(leaflet)
-library(leafem)
-
-nzb_fgb_url = "https://vector-tiles-data.s3.eu-central-1.amazonaws.com/rivers_africa.fgb"
-
-leaflet(height = "800px", width = "100%") |>
-  addTiles(group = "osm") |>
-  addProviderTiles(
-    "Esri.WorldImagery"
-    , group = "esri"
-  ) |>
-  addFgb(
-    url = nzb_fgb_url
-    , layerId = "rivers_fgb"
-    , group = "rivers_fgb"
-    # , fillColor = "SUB_NAME"
-    , popup = TRUE
-    , minZoom = 6
-    , maxZoom = 10
-    , weight = 2
-  ) |>
-  addMouseCoordinates() |>
-  addLayersControl(
-    baseGroups = c("osm", "esri")
-    , overlayGroups =  c("rivers_fgb")
-  ) |>
-  setView(0, 0, 2)
