@@ -78,7 +78,8 @@ download_huc <- function(x,
 }
 
 huc4 <- 
-  c(1302, 
+  c(1301,
+    1302, 
     1303,
     1403,
     1407,
@@ -124,5 +125,60 @@ huc4$`1501` %<>%
 
 huc4 %>%
   dplyr::bind_rows() %>%
-  rmapshaper::ms_simplify(keep = 0.06) %>%
-  sf::write_sf("watersheds.geojson", delete_dsn = TRUE)
+  sf::write_sf("watersheds.fgb", delete_dsn = TRUE)
+
+sf::read_sf("watersheds.fgb")
+
+library(leaflet)
+library(leafem)
+
+# via URL
+url = "https://raw.githubusercontent.com/flatgeobuf/flatgeobuf/3.0.1/test/data/UScounties.fgb"
+
+m <-leaflet() %>%
+  addTiles()
+
+test <- leafem:::addFgb(map = m,
+    url = "watersheds.fgb",
+    label = "Watershed",
+    fillColor = "Subregion"
+  ) %>%
+  addLayersControl(overlayGroups = c("counties")) %>%
+  addMouseCoordinates() %>%
+  setView(lng = -105.644, lat = 51.618, zoom = 3)
+
+
+
+%>%
+  mapview::mapview(zcol = "Subregion",
+                   label = "Watershed")
+
+
+
+library(leaflet)
+library(leafem)
+
+nzb_fgb_url = "https://vector-tiles-data.s3.eu-central-1.amazonaws.com/rivers_africa.fgb"
+
+leaflet(height = "800px", width = "100%") |>
+  addTiles(group = "osm") |>
+  addProviderTiles(
+    "Esri.WorldImagery"
+    , group = "esri"
+  ) |>
+  addFgb(
+    url = nzb_fgb_url
+    , layerId = "rivers_fgb"
+    , group = "rivers_fgb"
+    # , fillColor = "SUB_NAME"
+    , popup = TRUE
+    , minZoom = 6
+    , maxZoom = 10
+    , weight = 2
+  ) |>
+  addMouseCoordinates() |>
+  addLayersControl(
+    baseGroups = c("osm", "esri")
+    , overlayGroups =  c("rivers_fgb")
+  ) |>
+  setView(0, 0, 2)
